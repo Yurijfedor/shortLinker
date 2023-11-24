@@ -1,0 +1,38 @@
+service: serverless
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, 'dev'} # Параметр --stage для вибору етапу розгортання
+  region: eu-central-1 # Регіон AWS, в якому розгортатимуться ресурси
+  memorySize: 256 # Обсяг пам'яті для Lambda функцій
+  timeout: 10 # Максимальний час виконання Lambda функцій (секунди)
+
+functions:
+  registerUser:
+    handler: src/auth/register/dist/register.handler
+    events:
+      - http:
+          path: /register
+          method: POST
+    environment:
+      USERS_TABLE: "users"
+  loginUser:
+    handler: src/auth/login/dist/login.handler
+    events:
+      - http:
+          path: /login
+          method: POST
+    environment:
+      SECRET_KEY: "usersX753vbdBgzgcmTy8PS9a4hj65m4PiQkc8kL/Yyry"
+  createLink:
+    handler: src/links/createLink/dist/createLink.handler
+    events:
+      - http:
+          path: /create-link
+          method: POST
+          authorizer:
+            name: authorizer
+            type: TOKEN
+            identitySource: method.request.header.Authorization
+    environment:
+      TABLE_NAME: "links"
