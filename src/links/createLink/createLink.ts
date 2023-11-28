@@ -6,6 +6,8 @@ const dynamoDB = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = "links";
 
 export const handler = async (event: APIGatewayEvent) => {
+  console.log(event.headers);
+
   try {
     if (!event.requestContext.authorizer) {
       return {

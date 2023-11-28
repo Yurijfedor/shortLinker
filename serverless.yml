@@ -24,6 +24,8 @@ functions:
           method: POST
     environment:
       SECRET_KEY: "usersX753vbdBgzgcmTy8PS9a4hj65m4PiQkc8kL/Yyry"
+  authorizer:
+    handler: src/auth/authorizer/dist/authorizer.authorize
   createLink:
     handler: src/links/createLink/dist/createLink.handler
     events:
@@ -36,3 +38,4 @@ functions:
             identitySource: method.request.header.Authorization
     environment:
       TABLE_NAME: "links"
+      AUTH_TOKEN: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MDA4OTMyNjF9.3aBrvZXpuFUwETaoq9osFXPbgec8XLR7XA1Sy0TpFUE"
