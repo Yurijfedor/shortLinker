@@ -6,10 +6,13 @@ provider:
   region: eu-central-1 # Регіон AWS, в якому розгортатимуться ресурси
   memorySize: 256 # Обсяг пам'яті для Lambda функцій
   timeout: 10 # Максимальний час виконання Lambda функцій (секунди)
+  deploymentBucket:
+    name: myfirsttestbucket112
 
 functions:
   registerUser:
     handler: src/auth/register/dist/register.handler
+    role: arn:aws:iam::275329420689:role/user_register
     events:
       - http:
           path: /register
@@ -18,16 +21,19 @@ functions:
       USERS_TABLE: "users"
   loginUser:
     handler: src/auth/login/dist/login.handler
+    role: arn:aws:iam::275329420689:role/user_register
     events:
       - http:
           path: /login
           method: POST
     environment:
-      SECRET_KEY: "usersX753vbdBgzgcmTy8PS9a4hj65m4PiQkc8kL/Yyry"
+      USERS_TABLE: "users"
   authorizer:
     handler: src/auth/authorizer/dist/authorizer.authorize
+    role: arn:aws:iam::275329420689:role/user_register
   createLink:
     handler: src/links/createLink/dist/createLink.handler
+    role: arn:aws:iam::275329420689:role/user_register
     events:
       - http:
           path: /create-link
@@ -38,4 +44,42 @@ functions:
             identitySource: method.request.header.Authorization
     environment:
       TABLE_NAME: "links"
-      AUTH_TOKEN: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJpYXQiOjE3MDA4OTMyNjF9.3aBrvZXpuFUwETaoq9osFXPbgec8XLR7XA1Sy0TpFUE"
+  deactivateLink:
+    handler: src/links/deactivateLink/dist/deactivateLink.handler
+    role: arn:aws:iam::275329420689:role/user_register
+    events:
+      - http:
+          path: /deactivate-link/{linkId}
+          method: PUT
+          authorizer:
+            name: authorizer
+            type: TOKEN
+            identitySource: method.request.header.Authorization
+    environment:
+      TABLE_NAME: "links"
+  redirect:
+    handler: src/links/redirect/dist/redirect.handler
+    role: arn:aws:iam::275329420689:role/user_register
+    events:
+      - http:
+          path: /redirect/{linkId}
+          method: GET
+          authorizer:
+            name: authorizer
+            type: TOKEN
+            identitySource: method.request.header.Authorization
+    environment:
+      TABLE_NAME: "links"
+  listLinks:
+    handler: src/links/listLinks/dist/listLinks.handler
+    role: arn:aws:iam::275329420689:role/user_register
+    events:
+      - http:
+          path: /listLinks
+          method: GET
+          authorizer:
+            name: authorizer
+            type: TOKEN
+            identitySource: method.request.header.Authorization
+    environment:
+      TABLE_NAME: "links"

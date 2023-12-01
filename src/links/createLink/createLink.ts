@@ -3,11 +3,9 @@ import * as AWS from "aws-sdk";
 const { v4: uuidv4 } = require("uuid");
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
-const TABLE_NAME = "links";
+const TABLE_NAME = process.env.TABLE_NAME || "links";
 
 export const handler = async (event: APIGatewayEvent) => {
-  console.log(event.headers);
-
   try {
     if (!event.requestContext.authorizer) {
       return {
@@ -15,7 +13,7 @@ export const handler = async (event: APIGatewayEvent) => {
         body: JSON.stringify({ message: "Unauthorized" }),
       };
     }
-    // Отримати дані користувача з авторизованого контексту
+
     const userId = event.requestContext.authorizer.principalId;
 
     if (event.body === null) {
@@ -26,17 +24,22 @@ export const handler = async (event: APIGatewayEvent) => {
     }
 
     const requestBody = JSON.parse(event.body);
-    const { originalUrl, linkLifetime } = requestBody;
+    const { url, lifetime } = requestBody;
 
-    const linkId = generateUniqueId(originalUrl);
+    const linkId = generateUniqueId();
+
+    const expirationDate = calculateExpirationDate(lifetime);
+
+    const isOneTime = lifetime === "one-time" ? true : false;
 
     const params = {
       TableName: TABLE_NAME,
       Item: {
         userId,
         linkId,
-        originalUrl,
-        linkLifetime,
+        url,
+        expirationDate,
+        isOneTime,
         isActive: true,
         createdAt: new Date().toISOString(),
       },
@@ -57,9 +60,22 @@ export const handler = async (event: APIGatewayEvent) => {
   }
 };
 
-function generateUniqueId(url: string) {
-  const parsedUrl = new URL(url);
-  const baseUrl = `${parsedUrl.hostname}/`;
+function generateUniqueId() {
   const uuid = uuidv4().slice(0, 6);
-  return `${baseUrl}${uuid}`;
+  return uuid;
+}
+
+function calculateExpirationDate(lifetime: string): number {
+  switch (lifetime) {
+    case "one-time":
+      return Math.floor(Date.now() / 1000) + 3153600000;
+    case "1 day":
+      return Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+    case "3 days":
+      return Math.floor(Date.now() / 1000) + 3 * 24 * 60 * 60;
+    case "7 days":
+      return Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60;
+    default:
+      return Math.floor(Date.now() / 1000) + 24 * 60 * 60;
+  }
 }

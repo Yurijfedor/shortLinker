@@ -1,5 +1,6 @@
 import { DynamoDB } from "aws-sdk";
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
+const { v4: uuidv4 } = require("uuid");
 
 const dynamoDb = new DynamoDB.DocumentClient();
 const USERS_TABLE = process.env.USERS_TABLE || "DefaultUsersTable"; // Назва таблиці DynamoDB
@@ -25,6 +26,7 @@ export const handler = async (event: { body: string }) => {
     const params = {
       TableName: USERS_TABLE,
       Item: {
+        id: uuidv4(),
         email,
         password: hashedPassword,
       },
