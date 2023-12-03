@@ -46,34 +46,6 @@ Before you begin, ensure you have the following prerequisites:
 2. Change to the project directory: `cd serverless-shortlinker`
 3. Install dependencies: `npm install`
 4. Configure your AWS credentials using `aws configure` if you haven't already.
-
-# ShortLinker AWS Serverless Application
-
-This is a serverless application built using AWS services. It provides short link creation and management with the following features:
-
-- User registration and login
-- Create short links
-- Deactivate short links
-- Redirect short links to the original URL
-- List user's short links
-- Automatic link expiration and notifications
-
-## Prerequisites
-
-Before you can deploy and run this application, make sure you have the following prerequisites:
-
-- [Node.js](https://nodejs.org/) installed
-- [Serverless Framework](https://www.serverless.com/) installed
-- AWS CLI configured with your credentials
-
-## Deployment
-
-1. Clone this repository to your local machine.
-2. Navigate to the project directory.
-3. Run `npm install` to install the dependencies.
-4. Deploy the application using Serverless Framework:
-   serverless deploy -v
-
 5. Set up the required environment variables in AWS Secrets Manager:
 
 - Create a secret named `MySecret` with the following key-value pairs:
