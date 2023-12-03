@@ -1,0 +1,13 @@
+{
+  "name": "sendnotificationtoqueue",
+  "version": "1.0.0",
+  "description": "",
+  "main": "esbuild.config.js",
+  "scripts": {
+    "clean": "rm -rf dist/*",
+    "build": "npm run clean && node esbuild.config.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,1 +1,1 @@
-# serverless
+# shortlinker

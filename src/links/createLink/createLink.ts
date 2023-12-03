@@ -15,6 +15,7 @@ export const handler = async (event: APIGatewayEvent) => {
     }
 
     const userId = event.requestContext.authorizer.principalId;
+    const userEmail = event.requestContext.authorizer.email;
 
     if (event.body === null) {
       return {
@@ -36,6 +37,7 @@ export const handler = async (event: APIGatewayEvent) => {
       TableName: TABLE_NAME,
       Item: {
         userId,
+        userEmail,
         linkId,
         url,
         expirationDate,

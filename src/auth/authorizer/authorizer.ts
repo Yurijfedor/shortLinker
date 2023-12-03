@@ -56,7 +56,12 @@ export const authorize = async (
     console.log(decoded);
     return callback(
       null,
-      generatePolicy(decoded.userId as string, "Allow", event.methodArn || "")
+      generatePolicy(
+        decoded.userId as string,
+        decoded.email as string,
+        "Allow",
+        event.methodArn || ""
+      )
     );
   } catch (error) {
     console.error("Authorization error:", error);
@@ -64,9 +69,17 @@ export const authorize = async (
   }
 };
 
-function generatePolicy(principalId: string, effect: string, resource: string) {
+function generatePolicy(
+  principalId: string,
+  email: string,
+  effect: string,
+  resource: string
+) {
   const authResponse: any = {
     principalId,
+    context: {
+      email,
+    },
   };
 
   if (effect && resource) {
@@ -82,6 +95,7 @@ function generatePolicy(principalId: string, effect: string, resource: string) {
     };
     authResponse.policyDocument = policyDocument;
   }
+  console.log(authResponse);
 
   return authResponse;
 }

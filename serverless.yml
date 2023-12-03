@@ -1,11 +1,11 @@
-service: serverless
+service: shortlinker
 provider:
   name: aws
   runtime: nodejs18.x
-  stage: ${opt:stage, 'dev'} # Параметр --stage для вибору етапу розгортання
-  region: eu-central-1 # Регіон AWS, в якому розгортатимуться ресурси
-  memorySize: 256 # Обсяг пам'яті для Lambda функцій
-  timeout: 10 # Максимальний час виконання Lambda функцій (секунди)
+  stage: ${opt:stage, 'dev'}
+  region: eu-central-1
+  memorySize: 256
+  timeout: 10
   deploymentBucket:
     name: myfirsttestbucket112
 
@@ -83,3 +83,20 @@ functions:
             identitySource: method.request.header.Authorization
     environment:
       TABLE_NAME: "links"
+  sendNotificationToQueue:
+    handler: src/notifications/sendNotificationToQueue/dist/sendNotificationToQueue.handler
+    role: arn:aws:iam::275329420689:role/user_register
+    environment:
+      TABLE_NAME: "links"
+      QUEUE_URL: "https://sqs.eu-central-1.amazonaws.com/275329420689/sendMessageQueue"
+    events:
+      - eventBridge:
+          schedule: rate(2 minutes)
+
+  sendNotificationToUser:
+    handler: src/notifications/sendNotificationToUser/dist/sendNotificationToUser.handler
+    role: arn:aws:iam::275329420689:role/user_register
+    environment:
+      TABLE_NAME: "users"
+    events:
+      - sqs: arn:aws:sqs:eu-central-1:275329420689:sendMessageQueue
