@@ -12,7 +12,7 @@ provider:
 functions:
   registerUser:
     handler: src/auth/register/dist/register.handler
-    role: arn:aws:iam::275329420689:role/user_register
+    role: arn:aws:iam::YOUR_ACCOUNT_ID:role/user_register
     events:
       - http:
           path: /register
@@ -21,7 +21,7 @@ functions:
       USERS_TABLE: "users"
   loginUser:
     handler: src/auth/login/dist/login.handler
-    role: arn:aws:iam::275329420689:role/user_register
+    role: arn:aws:iam::YOUR_ACCOUNT_ID:role/user_register
     events:
       - http:
           path: /login
@@ -30,10 +30,10 @@ functions:
       USERS_TABLE: "users"
   authorizer:
     handler: src/auth/authorizer/dist/authorizer.authorize
-    role: arn:aws:iam::275329420689:role/user_register
+    role: arn:aws:iam::YOUR_ACCOUNT_ID:role/user_register
   createLink:
     handler: src/links/createLink/dist/createLink.handler
-    role: arn:aws:iam::275329420689:role/user_register
+    role: arn:aws:iam::YOUR_ACCOUNT_ID:role/user_register
     events:
       - http:
           path: /create-link
@@ -46,7 +46,7 @@ functions:
       TABLE_NAME: "links"
   deactivateLink:
     handler: src/links/deactivateLink/dist/deactivateLink.handler
-    role: arn:aws:iam::275329420689:role/user_register
+    role: arn:aws:iam::YOUR_ACCOUNT_ID:role/user_register
     events:
       - http:
           path: /deactivate-link/{linkId}
@@ -59,7 +59,7 @@ functions:
       TABLE_NAME: "links"
   redirect:
     handler: src/links/redirect/dist/redirect.handler
-    role: arn:aws:iam::275329420689:role/user_register
+    role: arn:aws:iam::YOUR_ACCOUNT_ID:role/user_register
     events:
       - http:
           path: /redirect/{linkId}
@@ -72,7 +72,7 @@ functions:
       TABLE_NAME: "links"
   listLinks:
     handler: src/links/listLinks/dist/listLinks.handler
-    role: arn:aws:iam::275329420689:role/user_register
+    role: arn:aws:iam::YOUR_ACCOUNT_ID:role/user_register
     events:
       - http:
           path: /listLinks
@@ -85,18 +85,18 @@ functions:
       TABLE_NAME: "links"
   sendNotificationToQueue:
     handler: src/notifications/sendNotificationToQueue/dist/sendNotificationToQueue.handler
-    role: arn:aws:iam::275329420689:role/user_register
+    role: arn:aws:iam::YOUR_ACCOUNT_ID:role/user_register
     environment:
       TABLE_NAME: "links"
-      QUEUE_URL: "https://sqs.eu-central-1.amazonaws.com/275329420689/sendMessageQueue"
+      QUEUE_URL: "https://sqs.eu-central-1.amazonaws.com/YOUR_ACCOUNT_ID/sendMessageQueue"
     events:
       - eventBridge:
           schedule: cron(0 9 * * ? *)
 
   sendNotificationToUser:
     handler: src/notifications/sendNotificationToUser/dist/sendNotificationToUser.handler
-    role: arn:aws:iam::275329420689:role/user_register
+    role: arn:aws:iam::YOUR_ACCOUNT_ID:role/user_register
     environment:
       TABLE_NAME: "users"
     events:
-      - sqs: arn:aws:sqs:eu-central-1:275329420689:sendMessageQueue
+      - sqs: arn:aws:sqs:eu-central-1:YOUR_ACCOUNT_ID:sendMessageQueue
