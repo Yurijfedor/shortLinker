@@ -91,7 +91,7 @@ functions:
       QUEUE_URL: "https://sqs.eu-central-1.amazonaws.com/275329420689/sendMessageQueue"
     events:
       - eventBridge:
-          schedule: rate(2 minutes)
+          schedule: cron(0 9 * * ? *)
 
   sendNotificationToUser:
     handler: src/notifications/sendNotificationToUser/dist/sendNotificationToUser.handler
