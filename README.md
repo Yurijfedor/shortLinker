@@ -47,11 +47,6 @@ Before you begin, ensure you have the following prerequisites:
 3. Install dependencies: `npm install`
 4. Configure your AWS credentials using `aws configure` if you haven't already.
 
-Так, виправивши README.md файл, ми можемо додати інформацію про створення бакету, таблиць та ролі користувача. Ось оновлений README.md файл:
-
-markdown
-Copy code
-
 # ShortLinker AWS Serverless Application
 
 This is a serverless application built using AWS services. It provides short link creation and management with the following features:
